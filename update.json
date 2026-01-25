@@ -1,0 +1,18 @@
+{
+    "addons": {
+        "synesis-export@synesis-lang.org": {
+            "updates": [
+                {
+                    "version": "0.1.4",
+                    "update_link": "https://github.com/synesis-lang/zotero-synesis-export/releases/download/v0.1.4/synesis-export.xpi",
+                    "applications": {
+                        "zotero": {
+                            "strict_min_version": "6.999",
+                            "strict_max_version": "8.*"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}
