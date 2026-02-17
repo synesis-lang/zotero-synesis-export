@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Synesis Export",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "description": "Export PDF annotations to Synesis format for qualitative research",
     "homepage_url": "https://github.com/synesis-lang/zotero-synesis-export",
     "author": "Christian M. De Britto",

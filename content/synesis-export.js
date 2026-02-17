@@ -11,6 +11,7 @@ SynesisExport = {
     id: null,
     version: null,
     rootURI: null,
+    prefPaneID: null,
 
     // Menu item IDs for cleanup
     menuItemId: "synesis-export-menuitem",
@@ -357,68 +358,45 @@ SynesisExport = {
      */
     openPreferencesDialog: function(window) {
         try {
-            let fields = this.getFieldNames();
             let dialogWindow = this.getDialogWindow(window);
-            let promptService = null;
-
-            if (typeof Services !== "undefined" && Services.prompt) {
-                promptService = Services.prompt;
-            } else if (typeof Components !== "undefined" && Components.classes && Components.interfaces) {
-                let promptClass = Components.classes["@mozilla.org/embedcomp/prompt-service;1"];
-                if (promptClass) {
-                    promptService = promptClass.getService(Components.interfaces.nsIPromptService);
-                }
-            }
-
-            let promptValue = (label, defaultValue) => {
-                if (dialogWindow && typeof dialogWindow.prompt === "function") {
-                    let response = dialogWindow.prompt(label, defaultValue);
-                    if (response === null) return { cancelled: true };
-                    return { cancelled: false, value: response.trim() };
-                }
-                if (promptService) {
-                    let input = { value: defaultValue };
-                    let ok = promptService.prompt(
-                        dialogWindow,
-                        "Synesis Export Preferences",
-                        label,
-                        input,
-                        null,
-                        { value: false }
-                    );
-                    if (!ok) return { cancelled: true };
-                    return { cancelled: false, value: (input.value || "").trim() };
-                }
-                return { cancelled: true, error: "Prompt service not available." };
-            };
-
-            let quotationPrompt = promptValue("Quotation field (highlighted text):", fields.quotation);
-            if (quotationPrompt.cancelled) {
-                if (quotationPrompt.error) {
-                    this.showAlert(dialogWindow, quotationPrompt.error);
-                }
+            if (!dialogWindow) {
+                this.showAlert(window, "No window available to open preferences.");
                 return;
             }
 
-            let memoPrompt = promptValue("Memo field (user comments):", fields.memo);
-            if (memoPrompt.cancelled) return;
+            let paneID = this.prefPaneID || "synesis-export-preferences-pane";
+            if (Zotero.Utilities && Zotero.Utilities.Internal &&
+                    typeof Zotero.Utilities.Internal.openPreferences === "function") {
+                try {
+                    Zotero.Utilities.Internal.openPreferences(paneID);
+                    return;
+                } catch (e) {
+                    this.log("Utilities.openPreferences with pane failed: " + e);
+                    Zotero.Utilities.Internal.openPreferences();
+                    return;
+                }
+            }
+            if (dialogWindow.ZoteroPane && typeof dialogWindow.ZoteroPane.openPreferences === "function") {
+                try {
+                    dialogWindow.ZoteroPane.openPreferences(paneID);
+                    return;
+                } catch (e) {
+                    this.log("ZoteroPane.openPreferences with pane failed: " + e);
+                    dialogWindow.ZoteroPane.openPreferences();
+                    return;
+                }
+            }
 
-            let codePrompt = promptValue("Code field (tags):", fields.code);
-            if (codePrompt.cancelled) return;
-
-            let quotation = quotationPrompt.value || this.defaults.quotation;
-            let memo = memoPrompt.value || this.defaults.memo;
-            let code = codePrompt.value || this.defaults.code;
-
-            this.setFieldNames(quotation, memo, code);
-
-            this.showAlert(
-                dialogWindow,
-                "Preferences saved!\n\n" +
-                "Quotation field: " + quotation + "\n" +
-                "Memo field: " + memo + "\n" +
-                "Code field: " + code
-            );
+            if (typeof dialogWindow.openDialog === "function") {
+                dialogWindow.openDialog(
+                    "chrome://zotero/content/preferences/preferences.xhtml#" + paneID,
+                    "zotero-preferences",
+                    "chrome,titlebar,toolbar,centerscreen,resizable",
+                    paneID
+                );
+                return;
+            }
+            this.showAlert(window, "Unable to open Zotero preferences.");
         } catch (e) {
             this.log("Error opening preferences: " + e);
             this.showAlert(window, "Error opening preferences: " + e.message);

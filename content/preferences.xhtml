@@ -1,0 +1,35 @@
+<groupbox
+    id="synesis-export-prefpane-group"
+    data-search-strings-raw="synesis,export,options,quotation,memo,code,fields,preferences,configuracao">
+    <label value="Synesis Export Options" style="font-weight: bold;"/>
+    <description>Configure the field names used in Synesis export output.</description>
+
+    <vbox style="margin-top: 10px;">
+        <hbox align="center">
+            <label value="Quotation field:" control="synesis-export-quotation-field" style="min-width: 180px;"/>
+            <html:input
+                id="synesis-export-quotation-field"
+                type="text"
+                preference="extensions.synesis-export.fieldName.quotation"
+                style="flex: 1;"/>
+        </hbox>
+
+        <hbox align="center" style="margin-top: 6px;">
+            <label value="Memo field:" control="synesis-export-memo-field" style="min-width: 180px;"/>
+            <html:input
+                id="synesis-export-memo-field"
+                type="text"
+                preference="extensions.synesis-export.fieldName.memo"
+                style="flex: 1;"/>
+        </hbox>
+
+        <hbox align="center" style="margin-top: 6px;">
+            <label value="Code field:" control="synesis-export-code-field" style="min-width: 180px;"/>
+            <html:input
+                id="synesis-export-code-field"
+                type="text"
+                preference="extensions.synesis-export.fieldName.code"
+                style="flex: 1;"/>
+        </hbox>
+    </vbox>
+</groupbox>

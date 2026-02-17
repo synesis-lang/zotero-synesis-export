@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project aims to follow Semantic Versioning.
 
+## [0.1.5]
+### Added
+- Native Zotero preferences pane for configuring Quotation, Memo, and Code field names.
+
+### Changed
+- Replaced custom preference prompts/dialogs with configuration inside Zotero Preferences.
+
 ## [0.1.4]
 ### Added
 - Export options for a single item and a selected collection (context menu and Tools menu).

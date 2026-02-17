@@ -41,6 +41,19 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
     }
 
     SynesisExport.init({ id, version, rootURI });
+    if (Zotero.PreferencePanes && typeof Zotero.PreferencePanes.register === "function") {
+        try {
+            SynesisExport.prefPaneID = await Zotero.PreferencePanes.register({
+                pluginID: id,
+                id: "synesis-export-preferences-pane",
+                label: "Synesis Export",
+                src: "content/preferences.xhtml"
+            });
+            log("Registered preferences pane: " + SynesisExport.prefPaneID);
+        } catch (e) {
+            log("Failed to register preferences pane: " + e);
+        }
+    }
     SynesisExport.addToAllWindows();
 
     // Register window listener for new windows
@@ -82,6 +95,14 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 
 function shutdown() {
     log("Shutting down");
+    if (SynesisExport && SynesisExport.prefPaneID &&
+            Zotero.PreferencePanes && typeof Zotero.PreferencePanes.unregister === "function") {
+        try {
+            Zotero.PreferencePanes.unregister(SynesisExport.prefPaneID);
+        } catch (e) {
+            log("Failed to unregister preferences pane: " + e);
+        }
+    }
     SynesisExport.removeFromAllWindows();
     if (SynesisExport.windowListener && Services && Services.wm) {
         Services.wm.removeListener(SynesisExport.windowListener);
