@@ -18,3 +18,7 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.bak
+.gitnexus
+.claude
+AGENTS.md
+CLAUDE.md
